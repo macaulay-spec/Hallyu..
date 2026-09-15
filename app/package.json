@@ -1,0 +1,25 @@
+{
+  "name": "hallyu-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Hallyu — social home for K-drama fans. Interactive mobile-first web/PWA build of the Hallyu product pack.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 5173",
+    "test:smoke": "esbuild scripts/smoke-entry.jsx --bundle --platform=node --format=cjs --external:jsdom --outfile=scripts/.smoke.cjs --loader:.png=file && node scripts/.smoke.cjs",
+    "test:flow": "esbuild scripts/flow-entry.jsx --bundle --platform=node --format=cjs --external:jsdom --outfile=scripts/.flow.cjs --loader:.png=file && node scripts/.flow.cjs",
+    "test": "npm run test:smoke && npm run test:flow"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "esbuild": "^0.21.5",
+    "jsdom": "^30.0.1",
+    "vite": "^5.4.11"
+  }
+}

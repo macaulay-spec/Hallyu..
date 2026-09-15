@@ -1,0 +1,7 @@
+node_modules
+dist
+scripts/.smoke.cjs
+scripts/.flow.cjs
+scripts/*-bundle.cjs
+scripts/*-bundle.mjs
+*.local

@@ -30,3 +30,14 @@ drama-specific communities, and channel-style messaging.
    Compose Multiplatform UI wired to the design system.
 5. Iterate screen-by-screen from there using `02` and `03` as the spec AI
    Studio should keep referring back to.
+
+## Executable build
+
+This pack now ships with a runnable, interactive implementation:
+
+- **`app/`** — mobile-first React + Vite **PWA** implementing the full MVP UI and
+  state against the design tokens/content bible in `design/src`. Run with
+  `cd app && npm install && npm run dev`; `npm test` renders all 40 screens and
+  exercises the signup → onboarding → feed → post → DM flow. See `app/README.md`.
+- **`16_build_status_and_verdict.md`** — build verdict (is it worth it), evidence,
+  backend/legal checklist, known doc gaps, and how the web build maps to the KMP port.
