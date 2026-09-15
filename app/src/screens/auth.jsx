@@ -49,8 +49,8 @@ export function Welcome() {
 function SocialButtons({ onSocial }) {
   return (
     <>
-      <Button kind="secondary" onClick={onSocial}><Icon name="apple" size={20} fill /> Continue with Apple</Button>
-      <Button kind="secondary" onClick={onSocial}><Icon name="google" size={20} /> Continue with Google</Button>
+      <Button kind="secondary" onClick={() => onSocial('apple')}><Icon name="apple" size={20} fill /> Continue with Apple</Button>
+      <Button kind="secondary" onClick={() => onSocial('google')}><Icon name="google" size={20} /> Continue with Google</Button>
       <p className="t-caption c3" style={{ textAlign: 'center', margin: '4px 0 0' }}>or</p>
     </>
   );
@@ -62,7 +62,7 @@ export function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
-  const go = () => { store.signup(email.trim() || 'fan@hallyu.app'); nav.reset('onboarding-genres'); };
+  const go = (method = 'email') => { store.signup(email.trim() || 'fan@hallyu.app', undefined, method); nav.reset('onboarding-genres'); };
   return (
     <Shell>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
@@ -100,7 +100,7 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
-  const go = () => { store.login(email.trim() || 'fan@hallyu.app'); nav.reset(store.s.onboarded ? 'tabs' : 'onboarding-genres'); };
+  const go = (method = 'email') => { store.login(email.trim() || 'fan@hallyu.app', method); nav.reset(store.s.onboarded ? 'tabs' : 'onboarding-genres'); };
   return (
     <Shell>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>

@@ -3,6 +3,7 @@ import { Icon } from '../components/icons.jsx';
 import { Avatar, Button, FollowButton, Header, JoinButton, Overline } from '../components/ui.jsx';
 import { useStore } from '../data/store.jsx';
 import { useNav } from '../nav.jsx';
+import { track } from '../data/analytics.js';
 import * as C from '../data/content.js';
 
 export function DramaHub({ id, initialTab = 'Overview' }) {
@@ -10,6 +11,7 @@ export function DramaHub({ id, initialTab = 'Overview' }) {
   const nav = useNav();
   const d = C.drama(id);
   const [tab, setTab] = useState(initialTab);
+  React.useEffect(() => { track('drama_viewed', { drama_id: id, tab: initialTab.toLowerCase(), airing: d.airing }); }, [id]);
   const following = store.s.followedDramas.includes(d.id);
   const communityJoined = store.s.joinedCommunities.includes(d.community);
 
@@ -143,6 +145,7 @@ export function EpisodeThread({ dramaId, ep }) {
   const extra = store.s.threadComments[key] || [];
   const comments = [...seed, ...extra];
   const [text, setText] = useState('');
+  React.useEffect(() => { track('episode_thread_viewed', { drama_id: dramaId, episode_number: ep }); }, [dramaId, ep]);
 
   const send = () => { if (!text.trim()) return; store.addThreadComment(key, text.trim()); setText(''); };
 

@@ -4,6 +4,7 @@ import { Avatar, Button, Header, IconButton, JoinButton, Overline, SearchBar, Sh
 import { useStore } from '../data/store.jsx';
 import { useNav } from '../nav.jsx';
 import { communities as allCommunities, community as findCommunity, drama } from '../data/content.js';
+import { track } from '../data/analytics.js';
 
 function CommunityRow({ c }) {
   const store = useStore();
@@ -107,6 +108,7 @@ export function CommunityDetail({ id }) {
   const joined = store.s.joinedCommunities.includes(c.id);
   const posts = store.s.posts.filter(p => p.communityId === c.id);
   const d = c.linkedDrama ? drama(c.linkedDrama) : null;
+  React.useEffect(() => { track('community_viewed', { community_id: c.id, type: c.type, joined }); }, [c.id]);
 
   return (
     <div className="screen">

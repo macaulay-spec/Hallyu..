@@ -15,6 +15,16 @@ drama-specific communities, and channel-style messaging.
 | `03_technical_architecture_kmp.md` | KMP/Compose Multiplatform architecture, tech stack, module/file skeleton |
 | `04_ai_studio_build_prompt.md` | Ready-to-paste master prompt for Google AI Studio (Gemini) to scaffold the codebase |
 | `05_stitch_uiux_prompt.md` | Ready-to-paste prompt(s) for Stitch to generate the UI/UX design system and screens |
+| `06_prd_and_roadmap.md` | Per-feature acceptance criteria and phased roadmap |
+| `07_analytics_tracking_plan.md` | Event catalog, funnel/metric definitions (added; was referenced but missing) |
+| `08_api_contract.md` | Firestore client surface, Cloud Functions, Security Rules principles |
+| `09_database_schema.md` | Document schema + indexes + relationship map |
+| `11_test_strategy.md` | Test pyramid, emulator suites, coverage guidance |
+| `12_content_moderation_policy.md` | Screening, reporting, human review, enforcement, spoilers |
+| `13_data_retention_and_privacy_handling.md` | Data inventory, retention schedule, deletion/export, access control (added) |
+| `14_terms_of_service.md` | ToS draft template (pre-counsel) |
+| `15_privacy_policy.md` | Privacy policy draft template (pre-counsel) |
+| `16_build_status_and_verdict.md` | Build verdict, evidence, backend/legal checklist, KMP-port mapping |
 
 ## Recommended order of operations
 

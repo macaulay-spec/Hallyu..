@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useCallback } from 'react';
 import * as C from './content.js';
+import { track } from './analytics.js';
 
 const KEY = 'hallyu-state-v1';
 
@@ -146,25 +147,51 @@ export function StoreProvider({ children }) {
   }, []);
 
   const toggleSet = (field, id) => dispatch({ type: 'TOGGLE_SET', field, id });
+  // helpers for analytics-friendly toggles (only IDs/categories, never content)
+  const toggleTracked = (field, id, eventName, extra) => {
+    const had = s[field].includes(id);
+    dispatch({ type: 'TOGGLE_SET', field, id });
+    track(eventName, { id, state: had ? 'off' : 'on', ...extra });
+  };
+  const toggleKeyedTracked = (field, id, eventName) => {
+    const had = !!s[field][id];
+    dispatch({ type: 'TOGGLE_KEYED', field, id });
+    track(eventName, { id, state: had ? 'off' : 'on' });
+  };
+
   const api = useMemo(() => ({
     s,
-    signup: (email, name) => dispatch({ type: 'AUTH', auth: { email, name: name || email.split('@')[0] } }),
-    login: (email) => dispatch({ type: 'AUTH', auth: { email, name: email.split('@')[0] } }),
-    logout: () => dispatch({ type: 'LOGOUT' }),
-    completeOnboarding: (genres, dramaIds, actorIds) => dispatch({ type: 'ONBOARD', genres, dramaIds, actorIds }),
-    toggleFollowDrama: (id) => toggleSet('followedDramas', id),
-    toggleFollowActor: (id) => toggleSet('followedActors', id),
-    toggleJoin: (id) => toggleSet('joinedCommunities', id),
-    toggleSubscribe: (id) => toggleSet('joinedChannels' === '' ? 'subscribedChannels' : 'subscribedChannels', id),
-    toggleFollowUser: (id) => toggleSet('followingUsers', id),
-    toggleLikePost: (id) => dispatch({ type: 'TOGGLE_KEYED', field: 'likedPosts', id }),
-    toggleSavePost: (id) => dispatch({ type: 'TOGGLE_KEYED', field: 'savedPosts', id }),
-    toggleLikeClip: (id) => dispatch({ type: 'TOGGLE_KEYED', field: 'likedClips', id }),
-    toggleSaveClip: (id) => dispatch({ type: 'TOGGLE_KEYED', field: 'savedClips', id }),
-    addPost: (p) => { dispatch({ type: 'ADD_POST', ...p }); toast('Posted'); },
-    addComment: (postId, text) => dispatch({ type: 'ADD_COMMENT', postId, text }),
-    addThreadComment: (key, text) => dispatch({ type: 'ADD_THREAD_COMMENT', key, text }),
-    sendMessage: (convoId, text) => dispatch({ type: 'SEND_MESSAGE', convoId, text }),
+    signup: (email, name, method = 'email') => { dispatch({ type: 'AUTH', auth: { email, name: name || email.split('@')[0] } }); track('signup_completed', { method }); },
+    login: (email, method = 'email') => { dispatch({ type: 'AUTH', auth: { email, name: email.split('@')[0] } }); track('login_completed', { method }); },
+    logout: () => { dispatch({ type: 'LOGOUT' }); track('logout'); },
+    completeOnboarding: (genres, dramaIds, actorIds) => {
+      dispatch({ type: 'ONBOARD', genres, dramaIds, actorIds });
+      track('onboarding_completed', { genres_count: genres.length, dramas_count: dramaIds.length, actors_count: actorIds.length });
+    },
+    toggleFollowDrama: (id) => toggleTracked('followedDramas', id, 'drama_followed', { drama_id: id }),
+    toggleFollowActor: (id) => toggleTracked('followedActors', id, 'actor_followed', { actor_id: id }),
+    toggleJoin: (id) => {
+      const c = C.community(id);
+      toggleTracked('joinedCommunities', id, c?.type === 'drama' ? 'drama_community' : 'community_joined', { community_id: id, type: c?.type });
+    },
+    toggleSubscribe: (id) => toggleTracked('subscribedChannels', id, 'channel_subscribed', { channel_id: id }),
+    toggleFollowUser: (id) => toggleTracked('followingUsers', id, 'user_followed', { user_id: id }),
+    toggleLikePost: (id) => toggleKeyedTracked('likedPosts', id, 'post_liked'),
+    toggleSavePost: (id) => toggleKeyedTracked('savedPosts', id, 'post_saved'),
+    toggleLikeClip: (id) => toggleKeyedTracked('likedClips', id, 'clip_liked'),
+    toggleSaveClip: (id) => toggleKeyedTracked('savedClips', id, 'clip_saved'),
+    addPost: (p) => {
+      dispatch({ type: 'ADD_POST', ...p });
+      track('post_created', {
+        type: p.media ? (p.duration ? 'video' : 'image') : 'text',
+        has_drama_tag: !!p.dramaId, has_actor_tag: !!p.actorId, has_community_tag: !!p.communityId,
+        spoiler: !!p.spoiler, caption_length: (p.text || '').length,
+      });
+      toast('Posted');
+    },
+    addComment: (postId, text, source = 'post') => { dispatch({ type: 'ADD_COMMENT', postId, text }); track('comment_created', { post_id: postId, length: text.length, source }); },
+    addThreadComment: (key, text) => { dispatch({ type: 'ADD_THREAD_COMMENT', key, text }); const [drama_id, episode_number] = key.split(':'); track('episode_thread_commented', { drama_id, episode_number: Number(episode_number), length: text.length }); },
+    sendMessage: (convoId, text) => { dispatch({ type: 'SEND_MESSAGE', convoId, text }); track('dm_sent', { conversation_id: convoId, has_media: false }); },
     fakeReply: (convoId, activeConvo) => setTimeout(() => dispatch({
       type: 'RECV_MESSAGE', convoId, activeConvo,
       text: ['relatable 😭','NO because same','ok but the soundtrack though','adding this to my watchlist'][Math.floor(Math.random()*4)],

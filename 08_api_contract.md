@@ -33,7 +33,7 @@ client code.
 | `onCommunityMemberChange` | Firestore trigger | Update `memberCount` on `communities` doc |
 | `onEpisodeAirDate` | Scheduled function | Push `notification` docs to users following a drama when a new episode airs |
 | `onChannelBroadcast` | Firestore trigger on `channels/{id}/broadcasts/{id}` | Fan out FCM push to subscribers |
-| `moderateContentOnCreate` | Firestore trigger on `posts`/`comments` create | Run automated moderation check (see `10_content_moderation_policy.md`) before content is marked visible |
+| `moderateContentOnCreate` | Firestore trigger on `posts`/`comments` create | Run automated moderation check (see `12_content_moderation_policy.md`) before content is marked visible |
 
 ## Security Rules principles
 

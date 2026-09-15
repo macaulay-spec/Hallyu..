@@ -100,10 +100,11 @@ the cheapest possible moment to learn it.
 - [ ] **Backend contradiction**: doc `03` says **Supabase**; docs `04`, `08`, `09` say
       **Firebase/Firestore/Functions/FCM**. Pick one before writing backend code.
       (The data models map to either; the realtime/fan-out contracts are Firebase-flavored.)
-- [ ] **Missing docs referenced but absent from the pack**:
-      `07_analytics_tracking_plan.md` (instrument from Phase 1 — retrofitting is expensive),
-      `10_*` (referenced as moderation appendix),
-      `13_data_retention_and_privacy_handling.md` (referenced by ToS, Privacy, moderation).
+- [x] ~~Missing docs 07/10/13~~ — **resolved**: `07_analytics_tracking_plan.md` and
+      `13_data_retention_and_privacy_handling.md` have been drafted to match the
+      schema/contract, and the stale `10_content_moderation_policy.md` reference in
+      `08` now points to the actual `12_content_moderation_policy.md`. Both new docs
+      are operational drafts pending counsel review, like docs 12/14/15.
 - [ ] Target markets/ages (sets COPPA/GDPR-K age, eligibility, consent).
 - [ ] Legal: entity/jurisdiction, support inbox, DPA with hosting/moderation vendors.
 

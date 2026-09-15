@@ -3,6 +3,7 @@ import { Icon } from '../components/icons.jsx';
 import { Avatar, JoinButton, Overline, PostCard, SearchBar } from '../components/ui.jsx';
 import { useStore } from '../data/store.jsx';
 import { useNav } from '../nav.jsx';
+import { track } from '../data/analytics.js';
 import * as C from '../data/content.js';
 
 const TABS = ['Dramas', 'Actors', 'Users', 'Communities', 'Posts'];
@@ -16,6 +17,10 @@ export function SearchScreen({ tab: initialTab = 'Dramas' }) {
   useEffect(() => setTab(initialTab), [initialTab]);
   const query = q.trim().toLowerCase();
   const empty = query.length < 2;
+  useEffect(() => {
+    const t = setTimeout(() => { if (q.trim().length >= 2) track('search_performed', { query_length: q.trim().length, tab }); }, 300);
+    return () => clearTimeout(t);
+  }, [q, tab]);
 
   const dramas = C.dramas.filter(d => d.title.toLowerCase().includes(query));
   const actors = C.actors.filter(a => a.name.toLowerCase().includes(query));
